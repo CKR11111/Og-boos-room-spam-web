@@ -10,25 +10,19 @@ def index():
 
 @app.route('/send_spam', methods=['POST'])
 def send_spam():
-    user_id = request.form.get('user_id')
-    # User le haleko duration line, natra default 5 rakhne
-    duration = request.form.get('duration', 5)
+    data = request.get_json()
+    uid = data.get('user_id')
+    dur = data.get('duration', 5)
     
-    if not user_id:
-        return jsonify({"status": "error", "message": "Target UID halnus!"}), 400
-
-    # Timro API Endpoint
-    api_url = f"http://127.0.0.1:5000/spam?user_id={user_id}&duration={duration}"
+    api_url = f"https://ckrunknown-ckrpro.hf.space/spam?user_id={uid}&duration={dur}"
     
     try:
-        # Render ma hunda 127.0.0.1 connect नहुन सक्छ, tara request pathaucha
-        requests.get(api_url, timeout=0.5) 
-        return jsonify({"status": "success", "message": f"Command sent to {user_id}!"})
-    except:
-        # User lai process vayo vanera dekhauna success pathaucha
-        return jsonify({"status": "success", "message": f"Successfully executed on {user_id}!"})
+        # 30 second timeout rakheko chhu taaki API le time liyo bhane pani crash nahos
+        response = requests.get(api_url, timeout=30)
+        return jsonify({"status": "success", "res": response.text})
+    except Exception as e:
+        return jsonify({"status": "error", "res": str(e)})
 
 if __name__ == '__main__':
-    # Render ko dynamic port handle garna
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
