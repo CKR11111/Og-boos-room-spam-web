@@ -3,141 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DEF SAJAN</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>CKRPRO - Room Spam</title>
     <style>
-        :root { --ios-blue: #007aff; --glass: rgba(255, 255, 255, 0.05); }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
-            background: #000;
-            background-image: radial-gradient(circle at 50% -20%, #1e293b, #000);
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
         }
 
-        .glass-panel {
-            background: var(--glass);
-            backdrop-filter: blur(30px) saturate(200%);
-            -webkit-backdrop-filter: blur(30px) saturate(200%);
-            border: none; /* Border hatayeko */
-            border-radius: 38px;
-            padding: 50px 30px;
-            width: 360px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+        /* Glassmorphism Card */
+        .iphone-card {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 35px;
+            width: 340px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
             text-align: center;
         }
 
-        .brand-name {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: -1px;
-            background: linear-gradient(180deg, #fff 0%, #888 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 40px;
-            display: block;
-        }
+        h2 { color: #1d1d1f; font-weight: 600; font-size: 22px; margin-bottom: 25px; }
 
         .input-box {
-            text-align: left;
-            margin-bottom: 22px;
-        }
-
-        label {
-            font-size: 11px;
-            font-weight: 600;
-            color: rgba(255,255,255,0.4);
-            margin-left: 15px;
-            margin-bottom: 8px;
-            display: block;
-            text-transform: uppercase;
-        }
-
-        input {
             width: 100%;
-            padding: 18px 22px;
-            background: rgba(255,255,255,0.04);
-            border: none; /* Border-less */
-            border-radius: 18px;
-            color: #fff;
-            font-size: 16px;
-            outline: none;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        input:focus { background: rgba(255,255,255,0.1); }
-
-        button {
-            width: 100%;
-            padding: 20px;
-            background: var(--ios-blue);
             border: none;
-            border-radius: 20px;
-            color: #fff;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 15px;
-            box-shadow: 0 15px 30px rgba(0, 122, 255, 0.3);
-            transition: 0.3s;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #1d1d1f;
+            outline: none;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        button:active { transform: scale(0.96); opacity: 0.8; }
+        select.input-box { cursor: pointer; appearance: none; }
+
+        /* iOS Style Blue Button */
+        .btn-send {
+            width: 100%;
+            background: #007aff;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+        }
+
+        .btn-send:active { transform: scale(0.96); opacity: 0.9; }
+        .btn-send:disabled { background: #8e8e93; box-shadow: none; }
+
+        /* Terminal Display */
+        #terminal {
+            margin-top: 25px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #00ff00;
+            font-family: 'SF Mono', 'Courier New', monospace;
+            font-size: 12px;
+            padding: 15px;
+            border-radius: 18px;
+            height: 110px;
+            overflow-y: auto;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.1);
+            line-height: 1.5;
+        }
+
+        .loader {
+            display: none;
+            margin: 10px 0;
+            font-size: 14px;
+            color: #007aff;
+            font-weight: 500;
+        }
+
+        ::placeholder { color: #8e8e93; }
     </style>
 </head>
 <body>
 
-<div class="glass-panel">
-    <span class="brand-name">DEF SAJAN</span>
+<div class="iphone-card">
+    <h2>Room Spam</h2>
     
-    <form id="actionForm">
-        <div class="input-box">
-            <label>Target Account UID</label>
-            <input type="text" name="user_id" placeholder="Paste UID here" required>
-        </div>
+    <input type="number" id="uid" class="input-box" placeholder="Target UID">
+    
+    <select id="duration" class="input-box">
+        <option value="5">5 Seconds</option>
+        <option value="10">10 Seconds</option>
+        <option value="20">20 Seconds</option>
+    </select>
 
-        <div class="input-box">
-            <label>Duration (Seconds)</label>
-            <input type="number" name="duration" value="5" min="1" max="60" required>
-        </div>
+    <button onclick="startProcess()" id="btn" class="btn-send">Start Spam</button>
+    
+    <div id="status" class="loader">Connecting to API...</div>
 
-        <button type="submit" id="btn">Launch Command</button>
-    </form>
+    <div id="terminal">
+        <span style="color: #bbb;">         </span>
+    </div>
 </div>
 
 <script>
-    document.getElementById('actionForm').onsubmit = async (e) => {
-        e.preventDefault();
+    async function startProcess() {
+        const uid = document.getElementById('uid').value;
+        const dur = document.getElementById('duration').value;
         const btn = document.getElementById('btn');
-        const formData = new FormData(e.target);
-        
-        btn.innerHTML = "Processing...";
+        const loader = document.getElementById('status');
+        const term = document.getElementById('terminal');
+
+        if (!uid) {
+            alert("Please enter Target UID!");
+            return;
+        }
+
+        // Setup UI
         btn.disabled = true;
+        loader.style.display = 'block';
+        term.innerHTML += `<br><span style="color:#fff;">[!] Target set: ${uid}</span>`;
+        term.scrollTop = term.scrollHeight;
 
         try {
-            const res = await fetch('/send_spam', { method: 'POST', body: formData });
-            const data = await res.json();
-            
-            Swal.fire({
-                title: 'Success',
-                text: data.message,
-                icon: 'success',
-                background: '#111',
-                color: '#fff',
-                confirmButtonColor: '#007aff',
-                borderRadius: '25px'
+            const response = await fetch('/send_spam', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: uid, duration: dur })
             });
-        } catch {
-            Swal.fire('Error', 'Server unreachable!', 'error');
+
+            const data = await response.json();
+
+            if (data.status === "success") {
+                term.innerHTML += `<br><span style="color:#00ff00;">[✓] Response: ${data.res}</span>`;
+            } else {
+                term.innerHTML += `<br><span style="color:#ff3b30;">[X] Fail: ${data.res}</span>`;
+            }
+        } catch (error) {
+            term.innerHTML += `<br><span style="color:#ff3b30;">[X] Connection Error!</span>`;
         } finally {
-            btn.innerHTML = "Launch Command";
+            loader.style.display = 'none';
             btn.disabled = false;
+            term.scrollTop = term.scrollHeight;
         }
-    };
+    }
 </script>
 
 </body>
