@@ -10,18 +10,24 @@ def index():
 
 @app.route('/send_spam', methods=['POST'])
 def send_spam():
-    data = request.get_json()
-    uid = data.get('user_id')
-    dur = data.get('duration', 5)
-    
-    api_url = f"https://ckrunknown-ckrpro.hf.space/spam?user_id={uid}&duration={dur}"
-    
     try:
-        # 30 second timeout rakheko chhu taaki API le time liyo bhane pani crash nahos
-        response = requests.get(api_url, timeout=30)
-        return jsonify({"status": "success", "res": response.text})
+        data = request.get_json()
+        uid = data.get('user_id')
+        dur = data.get('duration', 5)
+        
+        api_url = f"https://ckrunknown-ckrpro.hf.space/spam?user_id={uid}&duration={dur}"
+        
+        # 120 seconds wait garchha (2 minutes)
+        response = requests.get(api_url, timeout=120)
+        
+        return jsonify({
+            "status": "success", 
+            "res": response.text
+        })
+    except requests.exceptions.Timeout:
+        return jsonify({"status": "error", "res": "API Response Timeout (Took too long)!"})
     except Exception as e:
-        return jsonify({"status": "error", "res": str(e)})
+        return jsonify({"status": "error", "res": f"Error: {str(e)}"})
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
