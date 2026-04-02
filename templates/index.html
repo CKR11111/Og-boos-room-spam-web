@@ -1,1 +1,144 @@
-h
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CKRPRO ULTIMATE</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root { --ios-blue: #007aff; --glass: rgba(255, 255, 255, 0.05); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
+        
+        body {
+            background: #000;
+            background-image: radial-gradient(circle at 50% -20%, #1e293b, #000);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border: none; /* Border hatayeko */
+            border-radius: 38px;
+            padding: 50px 30px;
+            width: 360px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+            text-align: center;
+        }
+
+        .brand-name {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(180deg, #fff 0%, #888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 40px;
+            display: block;
+        }
+
+        .input-box {
+            text-align: left;
+            margin-bottom: 22px;
+        }
+
+        label {
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.4);
+            margin-left: 15px;
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        input {
+            width: 100%;
+            padding: 18px 22px;
+            background: rgba(255,255,255,0.04);
+            border: none; /* Border-less */
+            border-radius: 18px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        input:focus { background: rgba(255,255,255,0.1); }
+
+        button {
+            width: 100%;
+            padding: 20px;
+            background: var(--ios-blue);
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 15px;
+            box-shadow: 0 15px 30px rgba(0, 122, 255, 0.3);
+            transition: 0.3s;
+        }
+
+        button:active { transform: scale(0.96); opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+<div class="glass-panel">
+    <span class="brand-name">CKRPRO ULTIMATE</span>
+    
+    <form id="actionForm">
+        <div class="input-box">
+            <label>Target Account UID</label>
+            <input type="text" name="user_id" placeholder="Paste UID here" required>
+        </div>
+
+        <div class="input-box">
+            <label>Duration (Seconds)</label>
+            <input type="number" name="duration" value="5" min="1" max="60" required>
+        </div>
+
+        <button type="submit" id="btn">Launch Command</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('actionForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn');
+        const formData = new FormData(e.target);
+        
+        btn.innerHTML = "Processing...";
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/send_spam', { method: 'POST', body: formData });
+            const data = await res.json();
+            
+            Swal.fire({
+                title: 'Success',
+                text: data.message,
+                icon: 'success',
+                background: '#111',
+                color: '#fff',
+                confirmButtonColor: '#007aff',
+                borderRadius: '25px'
+            });
+        } catch {
+            Swal.fire('Error', 'Server unreachable!', 'error');
+        } finally {
+            btn.innerHTML = "Launch Command";
+            btn.disabled = false;
+        }
+    };
+</script>
+
+</body>
+</html>
