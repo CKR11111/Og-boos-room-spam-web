@@ -1,6 +1,6 @@
 import os
-from flask import Flask, render_template, request, jsonify
 import requests
+from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
@@ -10,24 +10,21 @@ def index():
 
 @app.route('/send_spam', methods=['POST'])
 def send_spam():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    
+    if not user_id:
+        return jsonify({"status": "error", "message": "UID is required!"}), 400
+
+    # API Endpoint
+    api_url = "https://sites-penny-door-fire.trycloudflare.com/spam"
+    params = {'user_id': user_id, 'duration': 5}
+
     try:
-        data = request.get_json()
-        uid = data.get('user_id')
-        dur = data.get('duration', 5)
-        
-        api_url = f"https://ckrunknown-ckrpro.hf.space/spam?user_id={uid}&duration={dur}"
-        
-        # 120 seconds wait garchha (2 minutes)
-        response = requests.get(api_url, timeout=120)
-        
-        return jsonify({
-            "status": "success", 
-            "res": response.text
-        })
-    except requests.exceptions.Timeout:
-        return jsonify({"status": "error", "res": "API Response Timeout (Took too long)!"})
-    except Exception as e:
-        return jsonify({"status": "error", "res": f"Error: {str(e)}"})
+        response = requests.get(api_url, params=params, timeout=15)
+        return jsonify({"status": "success", "message": "Command Sent!"})
+    except:
+        return jsonify({"status": "error", "message": "API Connection Failed"}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
