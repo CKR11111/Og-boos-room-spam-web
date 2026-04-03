@@ -17,7 +17,7 @@ def send_spam():
         return jsonify({"status": "error", "message": "UID is required!"}), 400
 
     # API Endpoint
-    api_url = "https://gst-stations-causes-infections.trycloudflare.com/spam"
+    api_url = "https://trinity-upgrades-commons-shares.trycloudflare.com/spam"
     params = {'user_id': user_id, 'duration': 5}
 
     try:
